@@ -35,14 +35,14 @@ class mirroring_testing(TestCase):
         self.backend_service = Popen(
             ['python', '-OO', backend_file_location]
         )
-        sleep(2)
+        sleep(3)
 
     def tearDown(self):
         """
         termina el servicio del backend y elimina todo rastro de los Tests
         """
         self.backend_service.kill()
-        sleep(2)
+        sleep(3)
 
     def test_mirroring(self):
         """
@@ -77,14 +77,14 @@ class app_testing(TestCase):
         )
         # start backend service
         self.backend_service = Popen(
-            ['python', '-OO', backend_file_location]
+            ['python', '-OO', backend_file_location, '--port=8080']
         )
-        sleep(2)
+        sleep(3)
         # simular un cliente
         self.client = app_client('ws://0.0.0.0:8080/channel')
         # datos dummy para usar
         self.dummy_user_info = {
-            'name': 'andreu',
+            'user_name': 'andreu',
             'password': 'buenafuente',
             'action': 'create_user'
         }
@@ -95,7 +95,7 @@ class app_testing(TestCase):
         """
         self.client.close()
         self.backend_service.kill()
-        sleep(2)
+        sleep(3)
 
     def test_crear_perfil(self):
         """
@@ -105,7 +105,7 @@ class app_testing(TestCase):
         # definir informacion de usuario, esta es la basica pero toca
         # investigar los datos que puede sacar el facebook
         user = {
-            'name': 'berto',
+            'user_name': 'berto',
             'password': 'romero',
             'action': 'create_user'
         }
@@ -116,6 +116,7 @@ class app_testing(TestCase):
         # mirar si el usuario fue creado y si no hay errores
         self.assertEqual(response_data['error'], [0, 'ok'])  # 0 means no error
         self.assertEqual(response_data['action'], 'user_created')
+        # la respuesta debe ser: {'action': 'user_created', 'error': [0, 'ok']}
 
         # CASO 2. REGISTRO DE UN USUARIO YA REGISTRADO
         # probar registrar a un usuario registrado, en este caso,
@@ -131,7 +132,7 @@ class app_testing(TestCase):
         # si falta informacion para el registro, este no debe realizarse
         # para proteger a la plataforma de posibles registros peligrosos
         user = {
-            'name': 'joel'
+            'user_name': 'joel'
         }
         response_data = self.client.send(user)
         self.assertEqual(
@@ -177,8 +178,8 @@ class app_testing(TestCase):
         # CASO 1. PRIMER PEDIDO
         # debe ser atendido
         info_pedido = {
-            'session_token' = '1' * 16,  # token de sesion de 16 cifras
-            'user_location' = [1.222, 1.333] # coordenada notacion decimal
+            'session_token': '1' * 16,  # token de sesion de 16 cifras
+            'user_location': [1.222, 1.333] # coordenada notacion decimal
         }
         respuesta_pedido = self.client.send(info_pedido)
         # mirar si la respuesta al pedido esta bien

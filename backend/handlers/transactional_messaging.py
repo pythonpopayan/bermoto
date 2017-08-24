@@ -23,7 +23,7 @@ class messaging_server(web.Application):
         #define petition handlers to use
         handlers = [
             (r'/channel', channelHandler, dict(q=q)),
-            (r'/mirror', mirrorHandler),
+            (r'/mirror', channelHandler, dict(q=q)),
         ]
 
         web.Application.__init__(self, handlers)
@@ -66,7 +66,7 @@ class channelHandler(websocket.WebSocketHandler):
 
     def open(self):
         """defines the websocket open method"""
-        pass
+        print('[channel]: started connection')
 
     @gen.coroutine
     def on_message(self, message):
@@ -74,6 +74,7 @@ class channelHandler(websocket.WebSocketHandler):
         data = json.loads(message)
         action = data.get('action')
         if action:
+            print(message)
             self.service_functions[action](message)
         else:
             print('[channelHandler]: must give an action')
@@ -88,6 +89,36 @@ class channelHandler(websocket.WebSocketHandler):
 
     def create_user(self, message):
         # IMPLEMETAR LOGICA DEL SERVICIO AQUI
+
+        # 1. vaidar si la informacion esta completa
+        # se necesita al menos: name, password
+        # se pide tambien el correo, (trabajar en el modelo de bd de usuario)
+
+        # 2. validar si usuario no existe
+        # ir a la base de datos y ver si existe el user_name que llego
+        # mandar mensaje de ya existente
+
+        # 3. validar si esta bien la contraseña
+        # minimo 8 caracteres, letras y numeros al menos
+        # mandar un mensaje de contraseña mala
+
+        # 4. crear objeto usuario si pasa todas las validaciones
+        # completar con defaults datos no obtenidos
+
+        # 5. almacenar informacion del usuario
+
+        # 6. devolver una respuesta al cliente
+
+        # TODO: definir modelo de base de datos (christian)
+
+        # TODO: seleccionar orm (edwin)
+        # TODO: validar si usuario existe (edwin)
+        # TODO: crear registro de usuario (edwin)
+
+        # TODO: completar datos del json para insercion (christian)
+
+        # TODO: funcion de validar contraseña (christian)
+
         pass
 
     def login_user(self, message):
