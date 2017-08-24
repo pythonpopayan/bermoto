@@ -34,7 +34,8 @@ el paquete **virtualenv** se procede a crear el entorno virtual de la siguiente
 manera:
 
 
-```virtualenv -p /usr/bin/python3 tor  # para linux
+```#/bash
+virtualenv -p /usr/bin/python3 tor  # para linux
 source tor/bin/activate  # para activar el entorno virtual
 ```
 
