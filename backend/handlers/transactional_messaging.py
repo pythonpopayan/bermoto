@@ -23,7 +23,7 @@ class messaging_server(web.Application):
         #define petition handlers to use
         handlers = [
             (r'/channel', channelHandler, dict(q=q)),
-            (r'/mirror', channelHandler, dict(q=q)),
+            (r'/mirror', mirrorHandler),
         ]
 
         web.Application.__init__(self, handlers)

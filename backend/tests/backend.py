@@ -33,7 +33,7 @@ class mirroring_testing(TestCase):
         )
         # start backend service
         self.backend_service = Popen(
-            ['python', '-OO', backend_file_location]
+            ['python', '-OO', backend_file_location, '--port=8081']
         )
         sleep(3)
 
@@ -42,7 +42,7 @@ class mirroring_testing(TestCase):
         termina el servicio del backend y elimina todo rastro de los Tests
         """
         self.backend_service.kill()
-        sleep(3)
+        sleep(5)
 
     def test_mirroring(self):
         """
@@ -51,7 +51,7 @@ class mirroring_testing(TestCase):
         y banco de pruebas funcionan bien
         """
         message = 'howdy'
-        ws = websocket.create_connection('ws://0.0.0.0:8080/mirror')
+        ws = websocket.create_connection('ws://0.0.0.0:8081/mirror')
         ws.send(message)
         result = ws.recv()
         self.assertEqual(
@@ -95,7 +95,7 @@ class app_testing(TestCase):
         """
         self.client.close()
         self.backend_service.kill()
-        sleep(3)
+        sleep(5)
 
     def test_crear_perfil(self):
         """
